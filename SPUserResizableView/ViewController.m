@@ -36,10 +36,21 @@
     [self.view addSubview:imageResizableView];
     [imageView release]; [imageResizableView release];
     
-    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideEditingHandles)];
-    [gestureRecognizer setDelegate:self];
-    [self.view addGestureRecognizer:gestureRecognizer];
-    [gestureRecognizer release];
+//    UITapGestureRecognizer *gestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideEditingHandles)];
+//    [gestureRecognizer setDelegate:self];
+//    [self.view addGestureRecognizer:gestureRecognizer];
+//    [gestureRecognizer release];
+    
+    // Add a toolbar for mode testing.
+    // http://stackoverflow.com/a/7712240/103058
+    UIToolbar *toolbar = [[UIToolbar alloc] init];
+    toolbar.frame = CGRectMake(0, 0, self.view.frame.size.width, 44);
+    NSMutableArray *items = [[NSMutableArray alloc] init];
+    [items addObject:[[[UIBarButtonItem alloc] initWithTitle:@"Resize" style:UIBarButtonItemStyleBordered target:self action:@selector(toggleMode:)] autorelease]];
+    [toolbar setItems:items animated:NO];
+    [items release];
+    [self.view addSubview:toolbar];
+    [toolbar release];
 }
 
 - (void)userResizableViewDidBeginEditing:(SPUserResizableView *)userResizableView {
@@ -62,6 +73,14 @@
     // We only want the gesture recognizer to end the editing session on the last
     // edited view. We wouldn't want to dismiss an editing session in progress.
     [lastEditedView hideEditingHandles];
+}
+
+- (void)toggleMode:(id)sender {
+    // todo
+    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"todo" message:@"todo" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    [alert release];
 }
 
 @end
