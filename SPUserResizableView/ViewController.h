@@ -11,6 +11,7 @@
 @interface ViewController : UIViewController <UIGestureRecognizerDelegate, SPUserResizableViewDelegate> {
     SPUserResizableView *currentlyEditingView;
     SPUserResizableView *lastEditedView;
+    UIToolbar *toolbar;
 }
 
 @end
