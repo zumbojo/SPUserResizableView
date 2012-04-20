@@ -35,6 +35,7 @@ static SPUserResizableViewAnchorPoint SPUserResizableViewLowerMiddleAnchorPoint 
     if ((self = [super initWithFrame:frame])) {
         // Clear background to ensure the content view shows through.
         self.backgroundColor = [UIColor clearColor];
+        self.multipleTouchEnabled = YES;
     }
     return self;
 }
@@ -306,11 +307,41 @@ typedef struct CGPointSPUserResizableViewAnchorPointPair {
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if ([self isResizing]) {
-        [self resizeUsingTouchLocation:[[touches anyObject] locationInView:self.superview]];
-    } else {
-        [self translateUsingTouchLocation:[[touches anyObject] locationInView:self]];
+    if ([touches count] == 2) {
+        // LaMarche's two finger rotate
+        // http://iphonedevelopment.blogspot.com/2009/12/better-two-finger-rotate-gesture.html
+        // https://github.com/jlamarche/Old-Blog-Code
+        NSArray *twoTouches = [touches allObjects];
+        UITouch *first = [twoTouches objectAtIndex:0];
+        UITouch *second = [twoTouches objectAtIndex:1];
+        
+        CGFloat currentAngle = angleBetweenLinesInRadians([first previousLocationInView:self], [second previousLocationInView:self], [first locationInView:self], [second locationInView:self]);
+        
+        self.transform = CGAffineTransformRotate(self.transform, currentAngle);
     }
+    else {
+        if ([self isResizing]) {
+            [self resizeUsingTouchLocation:[[touches anyObject] locationInView:self.superview]];
+        } else {
+            [self translateUsingTouchLocation:[[touches anyObject] locationInView:self]];
+        }        
+    }
+}
+
+// helper for LaMarche's two finger rotate
+static inline CGFloat angleBetweenLinesInRadians(CGPoint line1Start, CGPoint line1End, CGPoint line2Start, CGPoint line2End) {
+	
+	CGFloat a = line1End.x - line1Start.x;
+	CGFloat b = line1End.y - line1Start.y;
+	CGFloat c = line2End.x - line2Start.x;
+	CGFloat d = line2End.y - line2Start.y;
+    
+    CGFloat line1Slope = (line1End.y - line1Start.y) / (line1End.x - line1Start.x);
+    CGFloat line2Slope = (line2End.y - line2Start.y) / (line2End.x - line2Start.x);
+	
+	CGFloat degs = acosf(((a*c) + (b*d)) / ((sqrt(a*a + b*b)) * (sqrt(c*c + d*d))));
+    
+	return (line2Slope > line1Slope) ? degs : -degs;	
 }
 
 - (void)dealloc {
