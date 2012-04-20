@@ -35,7 +35,6 @@ static SPUserResizableViewAnchorPoint SPUserResizableViewLowerMiddleAnchorPoint 
     if ((self = [super initWithFrame:frame])) {
         // Clear background to ensure the content view shows through.
         self.backgroundColor = [UIColor clearColor];
-        self.multipleTouchEnabled = YES;
     }
     return self;
 }
@@ -97,6 +96,18 @@ static SPUserResizableViewAnchorPoint SPUserResizableViewLowerMiddleAnchorPoint 
 
 @synthesize contentView, minWidth, minHeight, preventsPositionOutsideSuperview, delegate;
 
+- (void)setMode:(SPUserResizableViewMode)mode {
+    _mode = mode;
+    
+    if (self.mode == SPUserResizableViewModeRotate) {
+        self.multipleTouchEnabled = YES;
+    }
+}
+
+- (SPUserResizableViewMode)mode {
+    return _mode;
+}
+
 - (void)setupDefaultAttributes {
     borderView = [[SPGripViewBorderView alloc] initWithFrame:CGRectInset(self.bounds, kSPUserResizableViewGlobalInset, kSPUserResizableViewGlobalInset)];
     [borderView setHidden:YES];
@@ -104,6 +115,7 @@ static SPUserResizableViewAnchorPoint SPUserResizableViewLowerMiddleAnchorPoint 
     self.minWidth = kSPUserResizableViewDefaultMinWidth;
     self.minHeight = kSPUserResizableViewDefaultMinHeight;
     self.preventsPositionOutsideSuperview = YES;
+    self.mode = SPUserResizableViewModeResize;
 }
 
 - (id)initWithFrame:(CGRect)frame {
