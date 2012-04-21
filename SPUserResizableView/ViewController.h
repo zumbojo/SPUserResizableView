@@ -12,6 +12,7 @@
     SPUserResizableView *currentlyEditingView;
     SPUserResizableView *lastEditedView;
     UIToolbar *toolbar;
+    bool rotateModeEnabled;
 }
 
 @end

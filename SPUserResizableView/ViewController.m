@@ -51,11 +51,14 @@
     [items release];
     [self.view addSubview:toolbar];
     [toolbar release];
+    
+    rotateModeEnabled = false;
 }
 
 - (void)userResizableViewDidBeginEditing:(SPUserResizableView *)userResizableView {
     [currentlyEditingView hideEditingHandles];
     currentlyEditingView = userResizableView;
+    currentlyEditingView.mode = rotateModeEnabled ? SPUserResizableViewModeRotate : SPUserResizableViewModeResize;
 }
 
 - (void)userResizableViewDidEndEditing:(SPUserResizableView *)userResizableView {
@@ -77,14 +80,7 @@
 }
 
 - (void)toggleMode:(id)sender {
-    // todo
-    
-    // change mode of current view
-    // may need protocol callback like "userResizableViewWasSelected:" or something... I don't know; it's sleep time.
-    
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"todo" message:@"todo" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-    [alert release];
+    rotateModeEnabled = !rotateModeEnabled;
 }
 
 @end

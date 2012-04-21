@@ -98,10 +98,7 @@ static SPUserResizableViewAnchorPoint SPUserResizableViewLowerMiddleAnchorPoint 
 
 - (void)setMode:(SPUserResizableViewMode)mode {
     _mode = mode;
-    
-    if (self.mode == SPUserResizableViewModeRotate) {
-        self.multipleTouchEnabled = YES;
-    }
+    borderView.multipleTouchEnabled = (self.mode == SPUserResizableViewModeRotate); // enable borderView multitouch only for rotate
 }
 
 - (SPUserResizableViewMode)mode {
@@ -319,7 +316,7 @@ typedef struct CGPointSPUserResizableViewAnchorPointPair {
 }
 
 - (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    if ([touches count] == 2) {
+    if (self.mode == SPUserResizableViewModeRotate && [touches count] == 2) {
         // LaMarche's two finger rotate
         // http://iphonedevelopment.blogspot.com/2009/12/better-two-finger-rotate-gesture.html
         // https://github.com/jlamarche/Old-Blog-Code
@@ -331,7 +328,7 @@ typedef struct CGPointSPUserResizableViewAnchorPointPair {
         
         self.transform = CGAffineTransformRotate(self.transform, currentAngle);
     }
-    else {
+    else if (self.mode == SPUserResizableViewModeResize) {
         if ([self isResizing]) {
             [self resizeUsingTouchLocation:[[touches anyObject] locationInView:self.superview]];
         } else {
